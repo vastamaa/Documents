@@ -1,0 +1,529 @@
+React - Maximilian Schwarzmüller
+
+--------------------------------
+
+Javascript
+
+Can be executed:
+- within the browser (ie. on the machine of the website visitor)
+- on any computer (outside of browsers with the help of Node.js or Deno eg. servers)
+- on mobile devices (with the help of capacitor or React Native eg. via embedded websites)
+
+Two options to add JavaScript code to a website:
+- between <script> tags eg. <script>Hello</script> (unmaintainable)
+- via <script> import eg. <script src="script.js"></script> (preferred, easier to maintain)
+ - use "defer" eg. <script src="script.js" defer></script> so script will only be executed after the rest of the html document has been read and parsed. (or place the <script> in the end of <body>)
+ - 'type="module"': makes sure that the .js file is treated as a module. Unlocks the "import" syntax.
+
+"react-scripts": Transforms your .js code and puts it into the HTML file during the build process.
+
+1. Raw, unprocessed React code won't execute in the browser -> JSX is not a default JavaScript feature.
+2. In addition, the code woul not be optimized for production (eg. not minimized: names not shortened, size not reduced; not optimized).
+
+npm - install package
+npx - create app
+
+export - makes data available outside of its "home" file. eg. export let apiKey = "1234";
+import - can import using the name of the data eg. import { apiKey } from "./util.js"; (same folder/file's name; React projects don't need the .js/ts extensions).
+export default - export the value without a name; this value should be the default thing exported. ONLY 1 default can be per file eg. export default let apiKey = "1234";
+In this case you use it as 'import apiKey from "./util.js"';
+Useful in cases when only 1 method is within the file.
+
+In case of multiple exports:
+export let one = 1;
+export let two = 2;
+
+import { one, two } from "./util.js";
+
+Or get all:
+
+import * as util from "./util.js"; - Place them into an object and use eg. util.one;
+
+as - can be used to assign aliases.
+
+
+
+
+
+There are different types of values:
+
+string - text values; wrapped with single or double quotes; can also be created with backticks. eg. "Hello World" 'Max' `Hi there`
+number - positive or negative; with decimal point(float) or without it (integer) 5 -23 3.14 -8.12
+boolean - true or false; "yes" or "no"; typically used in conditions
+null or undefined - "There is no value"; undefined: default if no value was assigned yet; null: explicitly assigned by developer (reset value)
+object - eg const user = { name: 'Max', age: 34 };
+
+objects can store funtions, methods. eg. const user = { name: 'Max', age: 34, greet() { console.log("Hello") } }; In this case you can even access the field of the object eg.
+const user = { name: 'Max', age: 34, greet() { console.log(this.age) } };
+
+class - you can create a blueprint to create objects, later, by this eg.
+
+class User {
+ constructor(name, age) { 
+ this.name = name; 
+ this.age = age;
+ } 
+greet() { 
+ console.log('Hi!')
+ } 
+}
+
+create object by this eg. const user1 = new User("Manuel", 35);
+
+let - can be re-assigned, read-write.
+const - must not be re-assigned, it is read-only; used when its value should never be re-assigned.
+
+== - checks for type
+=== - checks for value, for equality.
+
+
+
+
+
+functions eg:
+
+function greetUser(userName, message = "Hello") { console.log(userName); console.log(message); }
+greetUser("Max");
+greetUser("Max", "Hello, what's up?);
+
+const greetings = greetUser("Max);
+
+console.log(greetings);
+
+
+
+
+
+arrow functions - functions that don't need a name.
+Can be defined with the function keyword, can even export it. eg export default function() { console.log("Hello") }; or export default (userName) => {console.log("Hello"); return userName;}
+If your arrow functions takes exactly one parameter, you may omit the wrapping parentheses. eg instead of (user) => {...} you could write user => {...}
+If your function takes no parameters, parentheses must not be omitted - () => { ... } is the only correct form in that case.
+If your function takes more than one parameter, you also must not omit parentheses - userName, userAge => { ... } would be invalid ((userName, userAge) => { ... } is correct)!
+If your arrow function contains no other logic but a return statement, you may omit the curly braces and the return keyword.
+
+Instead of
+
+number => { 
+  return number * 3;
+}
+you could write
+
+number => number * 3;
+
+The following code would be invalid:
+
+number => return number * 3; // invalid because return keyword must also be omitted!
+number => if (number === 2) { return 5 }; // invalid because if statements can't be returned
+
+If you go for the shorter alternative and you're trying to return a JavaScript object, you may end up with the following, invalid code:
+
+number => { age: number }; // trying to return an object
+This code would be invalid because JavaScript treats the curly braces as function body wrappers (not as code that creates a JS object).
+
+To "tell" JavaScript that an object should be created (and returned) instead, the code would need to be adjusted like this:
+
+number => ({ age: number }); // wrapping the object in extra parentheses
+By wrapping the object and its curly braces with an extra pair of parentheses, JavaScript understands that the curly braces are not there to define a function body but instead to create an object. Hence that object then gets returned.
+
+Arrow functions are a different way of creating functions in JavaScript. Besides a shorter syntax, they offer advantages when it comes to keeping the scope of the this  keyword (see here).
+
+Arrow function syntax may look strange but it's actually simple.
+
+function callMe(name) { 
+    console.log(name);
+}
+which you could also write as:
+
+const callMe = function(name) { 
+    console.log(name);
+}
+becomes: 
+
+const callMe = (name) => { 
+    console.log(name);
+}
+Important: 
+
+When having no arguments, you have to use empty parentheses in the function declaration:
+
+const callMe = () => { 
+    console.log('Max!');
+}
+When having exactly one argument, you may omit the parentheses:
+
+const callMe = name => { 
+    console.log(name);
+}
+When just returning a value, you can use the following shortcut:
+
+const returnMe = name => name
+That's equal to:
+
+const returnMe = name => { 
+    return name;
+}
+
+
+
+
+
+arrays - special object;
+created by using [] eg. const hobbies = ["Sports", "Cooking", "Reading"];
+acces values by using the index eg. console.log(hobbies[0]);
+
+array.push - allows to add a new item to the end of the array.
+array.findIndex - allows to find the index of a certain value. Take function as a param eg. 
+hobbies.findIndex((item) => {
+ return item === "Sports";
+}
+
+executes it on every item, compares the values, if the two are equal it returns true, otherwise false. Have to return either.
+
+could be stored in a constant and logged eg. const index = hobbies.findIndex(item => item === "Sports"); console.log(index);
+
+array.map - takes a function as an input eg. arrow function; will be executed for every item; you return the transformed items eg. hobbies.map(item => item + "!");
+The original array will stay unchanged, but it returns a new array, thus we need a variable eg. const editedHobbies = hobbies.map(item => item + "!");
+We could even convert them to .js objects eg. const editedHobbies = hobbies.map(item => ({text: item})); "key: value" basically
+
+array.slice - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+array.splice - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+array.reduce - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce?v=b
+array.filter - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+array.find - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+
+
+
+
+
+There is a modern feature:
+- destructuring eg. const userNameData = ["Max", "Schwarzmüller"]; Values pulled out by position eg
+const [firstName, lastName] = ["Max", "Schwarzmülle"];
+console.log(firstName);
+console.log(lastName);
+
+this also works with objects eg.
+
+const user = {
+ name: "Max",
+ age: 39
+}
+
+const {name: userName, age} = {
+ name: "Max",
+ age: 39
+} 
+
+In this case, values are pulled out by field name, but alias can be used eg name: userName.
+console.log(userName);
+console.log(age);
+
+if a function accepts a parameter that will contain an object it can be destructured to "pull out" the object properties and make them available as locally scoped variables (i.e., variables only available inside the function body).
+
+Here's an example:
+
+function storeOrder(order) {
+  localStorage.setItem('id', order.id);
+  localStorage.setItem('currency', order.currency);
+}
+Instead of accessing the order properties via the "dot notation" inside the storeOrder function body, you could use destructuring like this:
+
+function storeOrder({id, currency}) { // destructuring
+  localStorage.setItem('id', id);
+  localStorage.setItem('currency', currency);
+}
+The destructuring syntax is the same as taught in the previous lecture - just without creating a constant or variable manually.
+
+Instead, id and currency are "pulled out" of the incoming object (i.e., the object passed as an argument to storeOrder).
+
+It's very important to understand, that storeOrder still only takes one parameter in this example! It does not accept two parameters. Instead, it's one single parameter - an object which then just is destructured internally.
+
+The function would still be called like this:
+
+storeOrder({id: 5, currency: 'USD', amount: 15.99}); // one argument / value!
+
+
+
+
+
+spread operator ... eg. - pulls out values and adds them as comma seprated values to a new array.
+
+const hobbies = ["Sports", "Cooking"];
+const newHobbie = ["Reading"];
+
+const mergedHobbies = [...hobbies, ...newHobbie]; Pulls out all the values, and place them as standalone values.
+const otherMergedHobbies [hobbies, newHobbie]; - would create an array of arrays;
+
+Also works with objects, and can merge the properties eg.
+
+const user {
+ name: "Max",
+ age: 34
+}
+
+const extendedUser = {
+ isAdmin: true,
+ ...user
+}
+
+functions as values eg.
+
+const handleTimeout = () => {
+ console.log("Timed out!");
+}
+
+setTimeout(() => {}) or setTimeout(handleTimeout, 2000); - only pass by using the name without parenthesis otherwise it will be executed and the returned value would be used for setTimeout basically, you only pass a handler.
+
+function greeter(greetFn) {
+ greetFn();
+}
+
+greeter(() => console.log("Hi")); - this "() => console.log("Hi")" is passed to the greeter function as a value and then it is executed.
+
+
+
+
+
+
+method inside method  eg.
+
+function init() {
+ function greet() {
+  console.log("Hi!");
+  }
+ greet();
+ }
+
+greet(); // won't work, because it is unreachable.
+
+init(); // works
+
+
+
+
+
+
+reference vs primitive values
+
+primitives cannot be edited, always produce new values, they get mutated, they are reference values.
+objects/arrays can be edited eg. const hobbies = ["Sports", "Cooking"];
+hobbies.push("Working");
+You don't store the value (in that constant), but the address of the value in the memory. Array changes, address not.
+
+In short, for objects, memory address is stored in the variable.
+The underlying value (i.e., the object / array) can be edited without changing that address. 
+The value can therefore be edited without reassigning the variable.
+
+let vs const - let  and const  basically replace var. You use let instead of var and const instead of var if you plan on never re-assigning this "variable" (effectively turning it into a constant therefore).
+
+
+
+
+
+--------------------------------
+
+React Essentials
+
+Components: small building blocks; reusable; related code stored together.
+Different components handle different data and logic; simplifies the process of working on complex apps.
+
+With React you write declarative code. Define target HTML structure, not the steps to get there.
+
+Browsers do not support .JSX. It is transformed.
+
+Component name should start with capital letter;
+Multiple word names should be in PascalCase eg. HomeComponent.
+Recommend to pick a name that describes the UI building block eg Header/MyHeader.
+
+Returns renderable content, a value that can be displayed on screen;
+In most cases, return JSX.
+Also allowed, string, boolean, number, null, array of allowed values.
+
+VSC, "Format Document" button, auto-formats the code, adds parenthesis.
+
+React projects can support both .jsx and .js extensions.
+
+App.js gets placed into the root div.
+App - root component
+Component hierachy.
+Custom components vs built in components: custom components start with Capital letter like MyHeader
+
+Dynamic data: curly braces {} - only expressions that directly produce a value can be here, such as 1+1, but no if, for-loop etc.
+
+We can lose image when eg bundling for deployment by referencing images like src="src/assets/image.png". They might be ignored.
+It should be imported eg. import reactImg from "../assets/image.png"
+Have to use it with {} without "".
+
+React allowes to pass data to components via using "props".
+
+Grouping Received Props Into a Single Object
+
+You can also pass multiple props to a component and then, in the component function, group them into a single object via JavaScript's "Rest Property" syntax.
+
+I.e., if a component is used like this:
+
+<CoreConcept title={CORE_CONCEPTS[0].title} description={CORE_CONCEPTS[0].description} image={CORE_CONCEPTS[0].image} />
+
+You could group the received props into a single object like this:
+
+export default function CoreConcept({ ...concept }) { // ...concept groups multiple values into a single object // Use concept.title, concept.description etc. // Or destructure the concept object: const { title, description, image } = concept; }
+
+If that syntax is a bit confusing - worry not! You'll also see concrete examples for this syntax (and for why you might want to use it in certain situations) throughout the course!
+
+Default Prop Values
+
+Sometimes, you'll build components that may receive an optional prop. For example, a custom Button component may receive a type prop.
+
+So the Button component should be usable either with a type being set:
+
+<Button type="submit" caption="My Button" />
+
+Or without it:
+
+<Button caption="My Button" />
+
+To make this component work, you might want to set a default value for the type prop - in case it's not passed.
+
+This can easily be achieved since JavaScript supports default values when using object destructuring:
+
+export default function Button({ caption, type = "submit" }) { // caption has no default value, type has a default value of "submit" }
+
+Importing css file into component file, the css will not be scoped, limited only to that file, but will be available everywher
+
+Props.children - content between the component tags. Good for components that take a single piece of renderable content. Especially convenient when passing jsx code as a value to another component.
+
+Attributes eg. (Props.title, props.name) - when multiple smaller pieces of information need to be passed.
+
+Advantage of defining event handler functions within component function is that they have access to component's props and state.
+
+Function name eg. handleClick - should name functions like this when they should be triggered after a certain event occurs, such as button click, so handleEventName, or eventNamHandler like handleClick, or clickHandler.
+
+Dont execute the functions, leave the parenthesis (). Pass it as a value eg handleClick instead of handleClick().
+
+Props that should in the end receive a function that will be triggered upon an event should start with "on" eg. onSelect.
+
+If we need to pass props to a method, passed down to a component, use it with an arrow function, so it will only be executed after the event triggered. So for example: () => handleClick('Hello'). It is equal for a function getting called within another function.
+
+By default, react components execute only once. You have to "tell" React if a component should be executed again.
+
+UI updates: React compares the old output (old jsx code) of your component function to the new output (new jsx code) and applies any differences to the actual website UI.
+
+If difference is identified, necessary updates will be applied to the real dom, ensuring that the visible UI matches the expected output.
+
+Hooks: have to be called inside custom hooks or top level of a component. Returns an array of 2 elements (if useState is used).
+We can destructure it to separate it into 2 constant with any name. Eg const [selectedTopic, setSelectedTopic] = useState('new'); -- basically getter/setter
+The 'selectedTopic' retuns the current snapshot, which is 'new' right now.
+The 'new' is the initial data.
+
+useState: manage data and "tell" react to re-execute a component function via React's useState() hook.
+The setter will tell the component to re-execute, re-render
+When we update the set, it schedules the state update, re-executes the component function. The updated value will be only available afte the component executed again.
+
+useState without initial state, the value is undefined. Also null can be rendered instead of a jsx component.
+
+Conditional rendering: &&, ternary (?:) OR store the first branch as a value of a let variable. The within an if change the value if true. Eg.
+
+let isCool = true;
+
+if (ConditionIsTrue) {
+isCool = false;
+}
+
+className instead of class is used, if you wanna add a class to a button for example.
+
+When dynamically outputting list of data, key has to be passed. It has to be a unique value, or maybe the .map() index.
+
+
+
+
+
+--------------------------------
+
+React Essentials Deep Dive:
+
+Fragment or <></> - a solution to return elements without using divs, because you can only return 1 value, not 2; we use it instead of "div". It will not be visible in the page, no wrapper will be around the elements, unlike when we return with <div></div>.
+
+Id-s are not automatically forwarded to the elements withon custom components. Have to add them as a prop.
+
+...props - "Rest property". Groups all remaining object properties into a new object (named "props" in this case).
+We can, by this, shorten the props. Eg.
+
+<MyComponent onSelect={handleClick} />
+
+export default function MyComponent({ onSelect }) {
+return <div onClick={handleClick}>Click Me!</div>
+}
+
+Now instead, you can directly paste it eg
+
+<MyComponent onClick={handleClick} />
+
+export default function MyComponent({ ...myCustomProps} ) {
+return <div {...myCustomProps}>Click Me!</div>
+}
+
+We can even pass custom jsx elements as props to other custom jsx elements.
+
+We can use a custom wrapper component.
+We pass it as a prop, and use that to wrap the needed element. Custom components must be passed as a dynamic value, with curly braces and the function name. For others, like div, menu etc, we have to pass it as string like "div". Eg.
+
+<MyComponent customContainer="div" />
+
+export default function MyComponent({ customContainer ...myCustomProps} ) {
+const CustomContainer = customContainer;
+return <CustomContainer {...myCustomProps}>Click Me!</CustomContainer>
+}
+
+With camelCase prop name, it will look like a built in component, so it will fail, because it is a "custom" one after all.
+
+Also we can set default prop values within the component, in the parenthesis eg myFunction(number = 1)
+
+In case of you have got a static element like a header that does not depend on anything, and stays the same, it can even be placed in the index.html file.
+
+The public/ Folder
+As shown in the previous lecture you can store images in the public/ folder and then directly reference them from inside your index.html or index.css files.
+
+The reason for that is that images (or, in general: files) stored in public/ are made publicly available by the underlying project development server & build process. Just like index.html, those files can directly be visited from inside the browser and can therefore also be requested by other files.
+
+If you try loading localhost:5173/some-image.jpg, you'll be able to see that image (if it exists in the public/ folder, of course).
+
+The src/assets/ Folder
+You can also store images in the src/assets/ folder (or, actually, anywhere in the src folder).
+
+So what's the difference compared to public/?
+
+Any files (of any format) stored in src (or subfolders like src/assets/) are not made available to the public. They can't be accessed by website visitors. If you try loading localhost:5173/src/assets/some-image.jpg, you'll get an error.
+
+Instead, files stored in src/ (and subfolders) can be used in your code files. Images imported into code files are then picked up by the underlying build process, potentially optimized, and kind of "injected" into the public/ folder right before serving the website. Links to those images are automatically generated and used in the places where you referenced the imported images.
+
+Which Folder Should You Use?
+You should use the public/ folder for any images that should not be handled by the build process and that should be generally available. Good candidates are images used directly in the index.html file or favicons.
+
+On the other hand, images that are used inside of components should typically be stored in the src/ folder (e.g., in src/assets/).
+
+When reusing components, React will create a new, isolated component. eg. If a player component has a method, then once you use it in player 1, it will only be used in player 1, not in player 2.
+
+When updating state based on old state:
+if your new state depends on your previous state value, you should not update the state like this eg setIsEditing(!isEditing). Instead, pass a function to your state updating the function. This function will automatically be called by React and will receive the guaranteed latest state value. eg setIsEditing(wasEditing => !wasEditing); setIsEditing(!isEditing) -- schedules a state update
+
+State updates are not performed instantly but at some point in the future ( when React has time for it ).
+In most cases, those state updates of course still are executed almost instantly.
+
+Objects & arrays ( which technically are objects ) are reference values in JS.
+You should therefore not mutate them directly -- instead create a (deep) copy first!
+
+NONO // NOT creating a copy because user is an object = a reference value
+const updatedUser = 'user':
+user.name = 'Max // editing the user object in memory
+
+The code above would update the old value, in memory, immediately, even before the scheduled state update was executed by React, which could lead to bugs.
+
+YESYES // Creating a copy via JS's spread operator
+const updatedUser = {...user}
+updatedUser.name = 'Max' // editing the copy, not the original
+
+
+Lifting the state up - Lift the state up to the closest ancestor component that has access to all components that need to work with that state.
+
+Adding a new state to store, kinda the same value, has to be avoided, if possible. Not a big problem tho.
+
+Deriving state from props.
